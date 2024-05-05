@@ -1,0 +1,131 @@
+package ilstu.edu;
+
+class Polynomial {
+	private class Node {
+		private Term data;
+		private Node next;
+
+		private Node(Term data) {
+			this.data = data;
+			this.next = null;
+		}
+	}
+
+	private Node termsHead;
+	private Node termsTail;
+
+	public Polynomial() {
+		this.termsHead = null;
+		this.termsTail = null;
+	}
+
+	public Polynomial(String polynomial) {
+		String[] terms = polynomial.split("\\s*(?=\\+|\\-)\\s*");
+		for (String term : terms) {
+			int coefficient;
+			int exponent;
+			if (term.contains("x")) {
+				String[] parts = term.split("x\\^?");
+				if (parts.length > 0) {
+					coefficient = Integer.parseInt(parts[0]);
+				} else {
+					coefficient = 1;
+				}
+				if (parts.length > 1) {
+					exponent = Integer.parseInt(parts[1]);
+				} else {
+					exponent = 1;
+				}
+			} else {
+				coefficient = Integer.parseInt(term);
+				exponent = 0;
+			}
+			addTermToPolynomial(new Term(coefficient, exponent));
+		}
+	}
+
+	public void addTermToPolynomial(Term term) {
+		Node newNode = new Node(term);
+		if (termsHead == null) {
+			termsHead = newNode;
+			termsTail = newNode;
+		} else {
+			termsTail.next = newNode;
+			termsTail = newNode;
+		}
+	}
+
+	public Polynomial addPolynomial(Polynomial poly) {
+		Polynomial result = new Polynomial();
+		Node node1 = this.termsHead;
+		Node node2 = poly.termsHead;
+
+		while (node1 != null || node2 != null) {
+			if (node1 == null) {
+				result.addTermToPolynomial(new Term(node2.data.getCoefficient(), node2.data.getExponent()));
+				node2 = node2.next;
+			} else if (node2 == null) {
+				result.addTermToPolynomial(new Term(node1.data.getCoefficient(), node1.data.getExponent()));
+				node1 = node1.next;
+			} else {
+				Term term = node1.data.addTerm(node2.data);
+				if (term != null) {
+					result.addTermToPolynomial(term);
+					node1 = node1.next;
+					node2 = node2.next;
+				} else if (node1.data.getExponent() > node2.data.getExponent()) {
+					result.addTermToPolynomial(new Term(node1.data.getCoefficient(), node1.data.getExponent()));
+					node1 = node1.next;
+				} else if (node1.data.getExponent() < node2.data.getExponent()) {
+					result.addTermToPolynomial(new Term(node2.data.getCoefficient(), node2.data.getExponent()));
+					node2 = node2.next;
+				}
+			}
+		}
+		return result;
+	}
+
+	private boolean prev = false;
+
+	@Override
+	public String toString() {
+
+		StringBuilder result = new StringBuilder();
+		Node curr = termsHead;
+
+		while (curr != null) {
+
+			int co = curr.data.getCoefficient();
+			if (co < 0) {
+				if (prev) {
+					result.append(" - ");
+				} else {
+					result.append('-');
+				}
+				prev = false;
+				if (co != -1) {
+					result.append(Math.abs(co));
+				}
+			} else if (co > 0) {
+				if (!prev) {
+					result.append(" + ");
+				}
+				prev = true;
+				if (co != 1) {
+					result.append(co);
+				}
+			} else {
+				prev = true;
+			}
+			int exponent = curr.data.getExponent();
+			if (exponent != 0) {
+				result.append("x");
+				if (exponent != 1) {
+					result.append("^" + exponent);
+				}
+			}
+			curr = curr.next;
+		}
+		return result.toString();
+	}
+}
