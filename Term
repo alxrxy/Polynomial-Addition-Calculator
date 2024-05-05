@@ -1,0 +1,46 @@
+package ilstu.edu;
+
+class Term {
+	private int coefficient;
+	private int exponent;
+
+	public Term(int coefficient, int exponent) {
+		this.coefficient = coefficient;
+		this.exponent = exponent;
+	}
+
+	public int getCoefficient() {
+		return coefficient;
+	}
+
+	public void setCoefficient(int coefficient) {
+		this.coefficient = coefficient;
+	}
+
+	public int getExponent() {
+		return exponent;
+	}
+
+	public void setExponent(int exponent) {
+		this.exponent = exponent;
+	}
+
+	public Term addTerm(Term other) {
+		if (this.exponent == other.exponent) {
+			return new Term(this.coefficient + other.coefficient, this.exponent);
+		} else {
+			return null;
+		}
+	}
+
+	@Override
+	public String toString() {
+		if (exponent == 0) {
+			return coefficient + "";
+		} else if (exponent == 1) {
+			return coefficient + "x";
+		} else {
+			return coefficient + "x^" + exponent;
+		}
+	}
+}
