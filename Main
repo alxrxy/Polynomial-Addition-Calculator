@@ -1,0 +1,39 @@
+package ilstu.edu;
+
+public class RegularPatient extends Patient {
+
+	private String mainSymptom;
+
+	public RegularPatient(int id, String fName, String lName, String physician, int age, String mainSymptom) {
+
+		super(id, fName, lName, physician, age);
+		this.mainSymptom = mainSymptom;
+	}
+
+	public String getMainSymptom() {
+		return mainSymptom;
+	}
+
+	public void setMainSymptom(String mainSymptom) {
+		this.mainSymptom = mainSymptom;
+	}
+
+	@Override
+	public String treat() {
+
+		if (mainSymptom.equalsIgnoreCase("coughing") || mainSymptom.equalsIgnoreCase("runny nose")
+				|| mainSymptom.equalsIgnoreCase("stuffy nose")) {
+			return "Amoxicillin";
+		} else if (mainSymptom.equalsIgnoreCase("hypertension")) {
+			return "ACE inhibitors";
+		} else {
+			return "IV fluids";
+		}
+	}
+
+	@Override
+	public String toString() {
+		return super.toString() + "\nMain Symptom: " + mainSymptom + "\nPCR test result: "
+				+ (getPcr() ? "Positive" : "Negative") + "\nTreatment: " + treat();
+	}
+}
